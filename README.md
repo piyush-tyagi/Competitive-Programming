@@ -1,2 +1,2 @@
 # Competitive-Programming
-Solved problems from various from online coding platforms.
+Solved problems from various  online coding platforms.
