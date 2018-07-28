@@ -1,0 +1,78 @@
+
+
+Prerequisites : Segment Trees
+
+Target Problem : Given an array of N elements and you have to answer Q queries
+of the form L R K , To Count the numbers smaller than K in range L to R.
+
+Key Idea : The key idea is to build a Segment Tree with a vector at every node
+and the vector contains all the elements of the subrange in a sorted order .
+And if you observe this segment tree structure this is some what similar to the
+tree formed during the merge sort algorithm ( Yes , thats why they are called
+Merge Sort Trees ) .
+
+Building the tree :
+
+vector<int>tree[5*N];
+int A[N];
+Void build_tree( int cur , int l , int r )
+{
+     if( l==r )
+     {
+            tree[cur].push_back( a[ l ] );
+            return ;
+     }
+     int mid = l+(r-l)/2;
+     build_tree(2*cur+1 , l , mid ); // Build left tree
+     build_tree(2*cur+2 , mid+1 , r ); // Build right tree
+     tree[cur] = merge( tree[2*cur+1] , tree[2*cur+2] ); //Merging the two sorted arrays
+}
+
+Querying the tree :
+
+int query( int cur, int l, int r, int x, int y, int k)
+{
+       if( r < x || l > y )
+      {
+               return 0; //out of range
+      }
+      if( x<=l && r<=y )
+      {
+              //Binary search over the current sorted vector to find elements smaller than K
+
+              Return upper_bound(tree[cur].begin(),tree[cur].end(),K)-tree[cur].begin();
+      }
+      int mid=l+(r-l)/2;
+     return query(2*cur+1,l,mid,x,y,k)+query(2*cur+2,mid+1,r,x,y,k);
+}
+
+Build function Analysis :== Build a merge sort tree takes O(NlogN) time which is
+same as Merge Sort Algorithm . It will take O(NlogN) memory because each number
+Ai will be present in at most LogN vectors (Height of the tree ) .
+
+Query function Analysis :== A range L to R can divided into at most Log(N) parts,
+where we will perform binary search on each part . So this gives us complexity
+of O(LogN * LogN) per query .
+
+Handling Point Updates :== The only reason that we cant handle updates on MST in
+this code is because its merge function takes too much time, so even if theres
+a point update it will lead to O(N). So the major issue is of vectors and
+rearranging them on updations, but why do we need vectors ? Just to find the
+elements smaller than K in that complete vector, right ? Lets forget about
+vectors and keep policy based data structure at each node which handles three
+queries (insertion , deletion and elements smaller than K in the set) in O(LogN)
+time . So now no need to rearrange vectors and we can use insertion - deletion
+to handle point queries . This is just an idea , we can discuss this in
+comments again if anyone has a doubt .
+
+Bonus :== How to use this to solve the query of type Kth smallest number in range
+L to R ? So we can binary search over the solution and find the value which has
+exactly K numbers smaller than it in the given range .
+Complexity :== O(LogN * LogN * LogAi ) per query .
+or build by merge sorted array of given array be indexes
+Complexity :==O(LogN*LogN]) per query .
+
+Why to use MST:== Apart from the code simplicity, they answer queries online .
+We could have used some offline algorithms like MOs or even Segment tree but
+come on, Online Querying is great because it can be used in Dp Optimisations
+and stuff like that . Peace Out .
